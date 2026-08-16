@@ -6,6 +6,9 @@ with the Web Audio API. Just upload `index.html` as-is.
 
 ## What's wired up
 
+- **Countdown**: Start/Retry now runs a 3-2-1 countdown (world frozen, no
+  enemies spawning) before the run actually begins, instead of dropping the
+  player straight into gameplay.
 - **SDK**: `crazygames-sdk-v3.js` loaded via `<script src>`, initialized in a
   fire-and-forget async block that never blocks the Start button. Every SDK
   call is wrapped in `sdkReady` checks + try/catch, so the game plays
@@ -54,27 +57,23 @@ same neon palette) rather than photos or hand-drawn art — sources are in
 
 ## Gameplay preview video
 
-`preview-landscape-1920x1080.mp4` and `preview-portrait-1080x1920.mp4` are
-included in this folder — real recorded gameplay, not a mockup. They were
-captured with Playwright driving the actual `index.html` build headlessly:
-scripted keyboard input flies the ship, swings, throws the orb, and repels
-for ~28 seconds while Chromium's video recorder captures the canvas at
-native resolution (portrait uses touch emulation so the mobile joystick/
-SWING/THROW/REPEL buttons are visible, matching what a phone player sees).
-No manual screen capture, no editing.
+`preview-landscape.mp4` and `preview-portrait.mp4` are real recorded human
+gameplay — Duncan actually playing the build, not a scripted mockup. Captured
+with macOS's `screencapture -v` while playing live (landscape: normal
+desktop window; portrait: Chrome's mobile device emulation, so the touch
+joystick/SWING/THROW/REPEL buttons are visible, matching what a phone player
+sees). The raw capture included browser chrome and, on a couple of aborted
+takes, unrelated desktop content — those takes were deleted unused; the two
+files here are cropped tight to just the game canvas via ffmpeg, at native
+capture resolution (no artificial letterboxing). Landscape is a 25s highlight
+(dense wave-4 combat into the Iron Warden boss reveal); portrait is a 13s
+clip from the same session. Both are silent — screen-recording audio capture
+needs a mic-input permission this environment couldn't grant non-interactively.
 
-Source/regeneration script: `../covers/video-src/record.js`. To re-record
-(e.g. after a gameplay change):
-```
-cd covers/video-src
-npm install
-npx playwright install ffmpeg   # one-time, only if not already cached
-node record.js
-```
-This produces `.webm` files; convert to `.mp4` with:
-```
-ffmpeg -i out/landscape.webm -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart landscape.mp4
-```
+There's also a scripted-input fallback method (Playwright driving the game
+headlessly, no human needed) in `../covers/video-src/record.js` if a fully
+automated re-record is ever preferable to a live capture — see that script's
+comments for usage.
 
 ## Testing checklist before upload
 

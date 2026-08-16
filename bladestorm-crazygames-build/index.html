@@ -68,6 +68,21 @@
   #banner .wv { font-size: 15px; letter-spacing: 4px; opacity: 0.85; }
   #banner .num { font-size: 56px; font-weight: 900; color: #f43f5e; text-shadow: 0 0 20px rgba(244,63,94,0.7); white-space: nowrap; }
   #banner.boss .num { font-size: 34px; letter-spacing: 2px; }
+  #countdown {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    pointer-events: none; opacity: 0; transition: opacity 0.15s;
+  }
+  #countdown.show { opacity: 1; }
+  #countdown .num {
+    font-size: 160px; font-weight: 900; color: #7dd3fc;
+    text-shadow: 0 0 30px rgba(125,211,252,0.9), 0 0 70px rgba(125,211,252,0.5);
+    animation: countdownPulse 1s ease-out;
+  }
+  @keyframes countdownPulse {
+    0% { transform: scale(1.5); opacity: 0; }
+    30% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
   #hint {
     position: fixed; left: 50%; top: 64px; transform: translateX(-50%);
     font-size: 13px; opacity: 0.75; text-align: center; white-space: nowrap;
@@ -168,6 +183,8 @@
   <div id="btnThrow" class="touch-btn">THROW</div>
   <div id="btnForce" class="touch-btn">REPEL</div>
 </div>
+
+<div id="countdown"><div class="num" id="countdownNum">3</div></div>
 
 <div id="overlay">
   <h1>BLADESTORM</h1>
@@ -1226,13 +1243,13 @@ function render(){
 
   drawFloor();
 
-  if (state === 'playing' || state === 'dying' || state === 'gameover'){
+  if (state === 'playing' || state === 'dying' || state === 'gameover' || state === 'countdown'){
     drawForceRings();
     drawBots();
     drawBoss();
     drawBullets();
     drawParticles();
-    if (state === 'playing'){
+    if (state === 'playing' || state === 'countdown'){
       drawBlade();
       drawPlayer();
     }
@@ -1599,9 +1616,41 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
   const ov = document.getElementById('overlay');
   ov.classList.add('hidden');
   resetGame();
-  startMusic();
   updateHealthHud();
   updateBladeStateLabel();
+  runCountdown();
+});
+
+function runCountdown(){
+  state = 'countdown';
+  const el = document.getElementById('countdown');
+  const numEl = document.getElementById('countdownNum');
+  let n = 3;
+  const showNum = (txt)=>{
+    numEl.textContent = txt;
+    numEl.style.animation = 'none';
+    void numEl.offsetHeight; // restart the pulse animation
+    numEl.style.animation = '';
+  };
+  showNum(n);
+  el.classList.add('show');
+  sfxWaveStart();
+  const step = ()=>{
+    n--;
+    if (n > 0){
+      showNum(n);
+      sfxWaveStart();
+      setTimeout(step, 700);
+    } else {
+      el.classList.remove('show');
+      beginRun();
+    }
+  };
+  setTimeout(step, 700);
+}
+
+function beginRun(){
+  startMusic();
   state = 'playing';
   if (sdkReady){
     try { window.CrazyGames.SDK.game.gameplayStart(); }
@@ -1611,7 +1660,7 @@ document.getElementById('startBtn').addEventListener('click', ()=>{
   hint.classList.remove('faded');
   clearTimeout(hint._t);
   hint._t = setTimeout(()=> hint.classList.add('faded'), 4000);
-});
+}
 
 requestAnimationFrame(t=>{ lastT = t; requestAnimationFrame(loop); });
 })();
