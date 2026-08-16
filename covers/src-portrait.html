@@ -5,18 +5,22 @@
 <style>
   html,body{margin:0;padding:0;overflow:hidden;background:#05060b;}
   #stage{width:800px;height:1200px;position:relative;overflow:hidden;
-    background: radial-gradient(ellipse at 50% 40%, #0d1424 0%, #05060b 62%);
+    background: radial-gradient(ellipse at 50% 32%, #0d1424 0%, #05060b 62%);
     font-family: Arial, Helvetica, sans-serif;
   }
   svg{display:block;}
+  .scrim{
+    position:absolute; left:0; bottom:0; width:100%; height:440px;
+    background: linear-gradient(to bottom, rgba(5,6,11,0) 0%, rgba(5,6,11,0.75) 45%, rgba(5,6,11,0.96) 100%);
+  }
   .title{
-    position:absolute; top:70px; left:0; width:100%; text-align:center;
-    font-size:88px; font-weight:900; letter-spacing:3px; color:#bff3ff;
+    position:absolute; bottom:190px; left:0; width:100%; text-align:center;
+    font-size:84px; font-weight:900; letter-spacing:3px; color:#bff3ff;
     text-shadow: 0 0 18px rgba(56,189,248,0.9), 0 0 46px rgba(56,189,248,0.55), 0 4px 10px rgba(0,0,0,0.8);
     margin:0;
   }
   .tagline{
-    position:absolute; top:170px; left:0; width:100%; text-align:center;
+    position:absolute; bottom:110px; left:0; width:100%; text-align:center;
     font-size:25px; font-weight:600; letter-spacing:1px; color:#cbd5e1;
     text-shadow: 0 2px 8px rgba(0,0,0,0.8);
   }
@@ -48,18 +52,18 @@
   <g stroke="rgba(56,189,248,0.08)" stroke-width="1" id="gridlines"></g>
 
   <g fill="#cbe8ff">
-    <circle cx="60" cy="260" r="1.6" opacity="0.7"/>
-    <circle cx="740" cy="300" r="1.6" opacity="0.7"/>
-    <circle cx="90" cy="560" r="1.4" opacity="0.6"/>
-    <circle cx="720" cy="640" r="1.5" opacity="0.6"/>
-    <circle cx="60" cy="900" r="1.4" opacity="0.5"/>
-    <circle cx="740" cy="1000" r="1.3" opacity="0.5"/>
-    <circle cx="400" cy="1140" r="1.2" opacity="0.5"/>
-    <circle cx="150" cy="1080" r="1.2" opacity="0.4"/>
+    <circle cx="60" cy="120" r="1.6" opacity="0.7"/>
+    <circle cx="740" cy="150" r="1.6" opacity="0.7"/>
+    <circle cx="90" cy="420" r="1.4" opacity="0.6"/>
+    <circle cx="720" cy="500" r="1.5" opacity="0.6"/>
+    <circle cx="60" cy="650" r="1.4" opacity="0.5"/>
+    <circle cx="740" cy="700" r="1.3" opacity="0.5"/>
+    <circle cx="400" cy="90" r="1.2" opacity="0.5"/>
+    <circle cx="200" cy="700" r="1.2" opacity="0.4"/>
   </g>
 
   <!-- boss, big and dim, upper-middle -->
-  <g transform="translate(430,420)" opacity="0.55">
+  <g transform="translate(430,270)" opacity="0.55">
     <g filter="url(#glowBig)" opacity="0.5">
       <circle r="150" fill="#f43f5e" opacity="0.35"/>
     </g>
@@ -70,38 +74,39 @@
   </g>
 
   <!-- battle bots converging -->
-  <g transform="translate(160,540) rotate(140)">
+  <g transform="translate(160,400) rotate(140)">
     <polygon points="80,0 24,-52 -46,-66 -24,-17 -24,17 -46,66 24,52"
       fill="#3f1220" stroke="#f43f5e" stroke-width="5"/>
     <circle cx="36" cy="0" r="17" fill="#fecdd3" filter="url(#glowSoft)"/>
   </g>
-  <g transform="translate(130,780) rotate(70) scale(1.15)">
+  <g transform="translate(130,610) rotate(70) scale(1.15)">
     <polygon points="80,0 24,-52 -46,-66 -24,-17 -24,17 -46,66 24,52"
       fill="#7f1d1d" stroke="#fb7185" stroke-width="6"/>
     <circle r="60" fill="none" stroke="rgba(251,113,133,0.5)" stroke-width="3"/>
     <circle cx="36" cy="0" r="19" fill="#fecdd3" filter="url(#glowSoft)"/>
   </g>
-  <g transform="translate(610,760) rotate(-70) scale(0.9)">
+  <g transform="translate(610,600) rotate(-70) scale(0.9)">
     <polygon points="80,0 24,-52 -46,-66 -24,-17 -24,17 -46,66 24,52"
       fill="#3f1220" stroke="#f43f5e" stroke-width="5"/>
     <circle cx="36" cy="0" r="17" fill="#fecdd3" filter="url(#glowSoft)"/>
   </g>
 
-  <!-- player ship, hero position lower-center, facing up into the fight -->
-  <g transform="translate(400,980) rotate(-90)">
+  <!-- player ship, hero position, facing up into the fight -->
+  <g transform="translate(400,730) rotate(-90)">
     <polygon points="-32,-24 -110,0 -32,24" fill="#93c5fd" opacity="0.85" filter="url(#glowSoft)"/>
     <polygon points="88,0 -56,52 -32,0 -56,-52" fill="#e2e8f0" stroke="#38bdf8" stroke-width="7"/>
     <circle cx="24" cy="0" r="15" fill="#38bdf8"/>
   </g>
-  <g transform="translate(400,914)">
+  <g transform="translate(400,664)">
     <circle r="30" fill="url(#orbGrad)" filter="url(#glowSoft)"/>
   </g>
 
   <g stroke="#e0f2fe" stroke-width="4" fill="none" opacity="0.9" filter="url(#glowSoft)">
-    <polyline points="400,914 432,878 418,868 452,828"/>
-    <polyline points="160,540 190,580 174,588 200,630"/>
+    <polyline points="400,664 432,628 418,618 452,578"/>
+    <polyline points="160,400 190,440 174,448 200,490"/>
   </g>
 </svg>
+<div class="scrim"></div>
 <div class="title">BLADESTORM</div>
 <div class="tagline">HORDE-MODE SURVIVAL<br/>NEWTONIAN DOGFIGHTING</div>
 </div>
