@@ -28,17 +28,35 @@ with the Web Audio API. Just upload `index.html` as-is.
   overlay reveals itself even if the ad callback never fires or ads are
   blocked/sitelocked in the test environment.
 
+## Store listing copy
+
+**Title:** BLADESTORM
+
+**Description:**
+> Pilot a lone ship against an endless robot horde. Zap enemies with your
+> crackling energy orb, hurl it out as a wide plasma globe that boomerangs
+> back, and unleash a repel to scatter a crowd before it overwhelms you.
+> Newtonian flight, screen-wrapping arena, and a bullet-hell boss every 5
+> waves.
+
+**Tagline (short card / search result):**
+> Horde-mode survival with a boomeranging plasma orb and Newtonian
+> dogfighting.
+
+## Cover art
+
+`cover-square-800x800.png`, `cover-landscape-1920x1080.png`, and
+`cover-portrait-800x1200.png` are included in this folder, at the exact
+pixel dimensions CrazyGames expects. They're vector compositions rendered
+straight from the game's own visual language (same ship/bot/boss silhouettes,
+same neon palette) rather than photos or hand-drawn art — sources are in
+`../covers/src-*.html` if the copy or composition ever needs to change.
+
 ## Still needed before submission
 
-I can't generate images or video in this environment, so these are still
-outstanding — happy to help wire them in once you have them:
+I can't generate video in this environment, so this is still outstanding:
 
-- Cover art: `cover-square-800x800.png`, `cover-landscape-1920x1080.png`,
-  `cover-portrait-800x1200.png` (see `pounce-crazygames-build/` for the
-  reference sizes CrazyGames expects)
 - A short gameplay preview video/GIF for the store listing
-- Game title/description copy for the CrazyGames listing page (the in-game
-  copy on the start screen can be reused as a starting point)
 
 ## Testing checklist before upload
 
@@ -47,6 +65,6 @@ outstanding — happy to help wire them in once you have them:
       midgame ad fires
 - [ ] Confirm `bladestorm_best` persists across a page reload and (once live)
       across devices when logged into a CrazyGames account
-- [ ] Test on mobile viewport — touch controls (joystick + SWING/THROW/FORCE
+- [ ] Test on mobile viewport — touch controls (joystick + SWING/THROW/REPEL
       buttons) are already wired up and mutually exclusive with the
       desktop control hints
