@@ -52,11 +52,29 @@ straight from the game's own visual language (same ship/bot/boss silhouettes,
 same neon palette) rather than photos or hand-drawn art — sources are in
 `../covers/src-*.html` if the copy or composition ever needs to change.
 
-## Still needed before submission
+## Gameplay preview video
 
-I can't generate video in this environment, so this is still outstanding:
+`preview-landscape-1920x1080.mp4` and `preview-portrait-1080x1920.mp4` are
+included in this folder — real recorded gameplay, not a mockup. They were
+captured with Playwright driving the actual `index.html` build headlessly:
+scripted keyboard input flies the ship, swings, throws the orb, and repels
+for ~28 seconds while Chromium's video recorder captures the canvas at
+native resolution (portrait uses touch emulation so the mobile joystick/
+SWING/THROW/REPEL buttons are visible, matching what a phone player sees).
+No manual screen capture, no editing.
 
-- A short gameplay preview video/GIF for the store listing
+Source/regeneration script: `../covers/video-src/record.js`. To re-record
+(e.g. after a gameplay change):
+```
+cd covers/video-src
+npm install
+npx playwright install ffmpeg   # one-time, only if not already cached
+node record.js
+```
+This produces `.webm` files; convert to `.mp4` with:
+```
+ffmpeg -i out/landscape.webm -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart landscape.mp4
+```
 
 ## Testing checklist before upload
 

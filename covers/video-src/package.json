@@ -1,0 +1,8 @@
+{
+  "name": "bladestorm-video",
+  "private": true,
+  "description": "Regenerates the CrazyGames gameplay preview clips. Run: npm install && node record.js",
+  "dependencies": {
+    "playwright": "^1.62.1"
+  }
+}
