@@ -446,7 +446,8 @@ const BOSS_HP_PER_TIER = 220;
 const BULLET_SPEED = 230;
 const BULLET_RADIUS = 6;
 const BULLET_DAMAGE = 9;
-const BULLET_LIFE = 5;
+const BULLET_LIFE = 4;
+const BOSS_REST_TIME = 1.3; // no bullets in flight during rest - a breather between patterns
 
 let state = 'start'; // start | playing | gameover
 let score = 0;
@@ -773,8 +774,10 @@ function spawnBoss(){
     x: bx, y: by, radius: BOSS_RADIUS,
     hp, maxHp: hp,
     dead: false, deathTimer: 0,
-    spiralAngle: Math.random()*Math.PI*2, spiralTimer: 0.6,
-    ringTimer: 2.6, aimedTimer: 1.8,
+    attackPhase: 'rest', phaseTimer: 1.4,
+    spiralAngle: 0, spiralShotsLeft: 0, spiralShotTimer: 0,
+    ringWaves: 0, ringTimer: 0,
+    aimedShotsLeft: 0, aimedShotTimer: 0,
     kbx: 0, kby: 0, bob: 0,
   };
   showBossBar();
@@ -816,29 +819,75 @@ function updateBoss(dt){
     else sfxPlayerHit();
   }
 
-  // bullet-hell patterns: a continuous spiral plus periodic ring bursts and aimed volleys
-  boss.spiralTimer -= dt;
-  if (boss.spiralTimer <= 0){
-    fireBullet(boss.x, boss.y, boss.spiralAngle, BULLET_SPEED*0.85);
-    fireBullet(boss.x, boss.y, boss.spiralAngle+Math.PI, BULLET_SPEED*0.85);
-    boss.spiralAngle += 0.5;
-    boss.spiralTimer = 0.1;
-  }
-  boss.ringTimer -= dt;
-  if (boss.ringTimer <= 0){
-    const n = 16;
-    for (let i=0;i<n;i++) fireBullet(boss.x, boss.y, (i/n)*Math.PI*2, BULLET_SPEED);
-    boss.ringTimer = 3.0;
-    shake(5, 0.2);
-  }
-  boss.aimedTimer -= dt;
-  if (boss.aimedTimer <= 0){
-    const baseAng = Math.atan2(player.y-boss.y, player.x-boss.x);
-    for (let i=-2;i<=2;i++) fireBullet(boss.x, boss.y, baseAng + i*0.16, BULLET_SPEED*1.15);
-    boss.aimedTimer = 2.2;
+  // Bullet-hell patterns run one at a time, each with a learnable shape and
+  // gaps a player can actually thread, separated by a bullet-free rest so
+  // the screen never compounds into an unsurvivable wall.
+  if (boss.attackPhase === 'rest'){
+    boss.phaseTimer -= dt;
+    if (boss.phaseTimer <= 0) startBossAttack(boss);
+  } else if (boss.attackPhase === 'spiral'){
+    boss.spiralShotTimer -= dt;
+    if (boss.spiralShotTimer <= 0){
+      if (boss.spiralShotsLeft > 0){
+        fireBullet(boss.x, boss.y, boss.spiralAngle, BULLET_SPEED*0.8);
+        fireBullet(boss.x, boss.y, boss.spiralAngle+Math.PI, BULLET_SPEED*0.8);
+        boss.spiralAngle += 0.42;
+        boss.spiralShotsLeft--;
+        boss.spiralShotTimer = 0.16;
+      } else {
+        endBossAttack(boss);
+      }
+    }
+  } else if (boss.attackPhase === 'ring'){
+    boss.ringTimer -= dt;
+    if (boss.ringTimer <= 0){
+      if (boss.ringWaves > 0){
+        const n = 10;
+        const offset = boss.ringWaves % 2 === 0 ? Math.PI/n : 0; // stagger alternate rings into the gaps
+        for (let i=0;i<n;i++) fireBullet(boss.x, boss.y, (i/n)*Math.PI*2 + offset, BULLET_SPEED*0.9);
+        shake(5, 0.2);
+        boss.ringWaves--;
+        boss.ringTimer = 0.6;
+      } else {
+        endBossAttack(boss);
+      }
+    }
+  } else if (boss.attackPhase === 'aimed'){
+    boss.aimedShotTimer -= dt;
+    if (boss.aimedShotTimer <= 0){
+      if (boss.aimedShotsLeft > 0){
+        const baseAng = Math.atan2(player.y-boss.y, player.x-boss.x);
+        for (let i=-1;i<=1;i++) fireBullet(boss.x, boss.y, baseAng + i*0.18, BULLET_SPEED*1.05);
+        boss.aimedShotsLeft--;
+        boss.aimedShotTimer = 0.45;
+      } else {
+        endBossAttack(boss);
+      }
+    }
   }
 
   updateBossHud();
+}
+
+function startBossAttack(boss){
+  const patterns = ['spiral','ring','aimed'];
+  boss.attackPhase = patterns[Math.floor(Math.random()*patterns.length)];
+  if (boss.attackPhase === 'spiral'){
+    boss.spiralAngle = Math.random()*Math.PI*2;
+    boss.spiralShotsLeft = 14;
+    boss.spiralShotTimer = 0;
+  } else if (boss.attackPhase === 'ring'){
+    boss.ringWaves = 2;
+    boss.ringTimer = 0;
+  } else if (boss.attackPhase === 'aimed'){
+    boss.aimedShotsLeft = 3;
+    boss.aimedShotTimer = 0;
+  }
+}
+
+function endBossAttack(boss){
+  boss.attackPhase = 'rest';
+  boss.phaseTimer = BOSS_REST_TIME;
 }
 
 function fireBullet(x,y,angle,speed){
